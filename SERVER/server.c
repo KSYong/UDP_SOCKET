@@ -43,7 +43,8 @@ server_t* server_init(){
         return -1;
     }
 
-    memset( &server->server_addr, 0, sizeof(struct sockaddr));
+    memset( &server->server_addr, 0, sizeof(server->server_addr));
+	memset( &server->client_addr, 0, sizeof(server->client_addr));
 
     server->server_addr.sin_family = AF_INET;
     server->server_addr.sin_addr.s_addr = INADDR_ANY;
@@ -54,6 +55,7 @@ server_t* server_init(){
         free(server);
         return -1;
     }
+	return server;
 }
 
 /**
@@ -67,6 +69,7 @@ void server_destroy(server_t* server){
         perror("close failed!");
     }
     free(server);
+	printf("success to destroy server object\n");
 }
 
 /**
@@ -78,10 +81,10 @@ void server_destroy(server_t* server){
 void server_process_data(server_t* server){
     if (server){
         ssize_t recv_byte;
-        struct sockaddr_in client_addr;
         char buffer[BUF_MAX_LEN];
         char* hello = "Hello from server";
-        recv_byte = recvfrom(server->sockfd, (char*) buffer, BUF_MAX_LEN, MSG_WAITALL, (struct sockaddr*)&client_addr, sizeof(client_addr));
+		socklen_t len = sizeof(server->client_addr);
+        recv_byte = recvfrom(server->sockfd, (char*) buffer, BUF_MAX_LEN, MSG_WAITALL, (struct sockaddr*)&server->client_addr, &len);
         if (recv_byte > 0){
             buffer[recv_byte] = '\0';
             printf("Client : %s\n", buffer);
@@ -89,7 +92,7 @@ void server_process_data(server_t* server){
         else{
             perror("receiving data from client failed!\n");
         }
-        if((sendto(server->sockfd, (const char*)hello, strlen(hello), 0, (const struct sockaddr*) &client_addr, sizeof(client_addr) <= 0))){
+        if((sendto(server->sockfd, (const char*)hello, strlen(hello), 0, (const struct sockaddr*) &server->client_addr, sizeof(server->client_addr)) <= 0)){
             perror("server to client send failed!");
         }
         else{

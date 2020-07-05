@@ -23,6 +23,7 @@ struct server_s{
     int sockfd;
     /// server의 socket address
     struct sockaddr_in server_addr;
+	struct sockaddr_in client_addr;
 };
 
 server_t* server_init();
