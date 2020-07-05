@@ -1,6 +1,10 @@
 #include "client.h"
 
-// Driver code 
+/**
+ * @fn int main()
+ * @brief client를 실행하기 위한 메인 함수
+ * @return int
+ */
 int main() { 
 
     client_t* client = client_init();
@@ -12,6 +16,11 @@ int main() {
     return 0;
 } 
 
+/**
+ * @fn client_t* client_init()
+ * @brief client 객체를 생성하고 초기화하는 함수
+ * @return 생성된 client 객체
+ */
 client_t* client_init(){
     client_t* client = (client_t*)malloc(sizeof(client_t));
     
@@ -28,6 +37,12 @@ client_t* client_init(){
     client->server_addr.sin_addr.s_addr = INADDR_ANY;
 }
 
+/**
+ * @fn void client_destroy(client_t* client)
+ * @brief client 객체를 삭제하기 위한 함수
+ * @return void
+ * @param client 삭제할 client 객체
+ */
 void client_destroy(client_t* client){
     if (close(client->sockfd) == -1){
         perror("close failed!");
@@ -35,7 +50,13 @@ void client_destroy(client_t* client){
     free(client);
 }
 
-int client_process_data(client_t* client){
+/**
+ * @fn void client_process_data(client_t* client)
+ * @brief server로 메시지 요청을 보내서 응답을 받는 함수
+ * @return void
+ * @param client 메시지 요청을 하기 위한 client 객체
+ */
+void client_process_data(client_t* client){
     char buffer[BUF_MAX_LEN];
     char *hello = "Hello from client to server";
     if((sendto(client->sockfd, (const char*)hello, strlen(hello), 0, (const struct sockaddr*) &(client->server_addr), sizeof(client->server_addr) <= 0))){

@@ -1,5 +1,23 @@
 #include "server.h"
 
+/**
+ * @mainpage Project : UDP Socket programming
+ * @section intro 소개 
+ *      - UDP를 이용한 소켓 프로그래밍 예제 입니다
+ * @section CreatInfo 작성 정보
+ *      - 작성자 : 권승용
+ *      - 작성일 : 2020/07/05
+ * @subsection exec 실행 방법 및 인수 설명
+ *      - 실행 방법\n
+ *        서버       : SERVER/server
+ *        클라이언트 : CLIENT/client
+ */
+
+/**
+ * @fn int main()
+ * @brief server를 실행하기 위한 메인 함수
+ * @return int
+ */
 int main(){
 
     server_t* server = server_init();
@@ -11,6 +29,11 @@ int main(){
     return 0;
 }
 
+/**
+ * @fn server_t* server_init()
+ * @brief server 객체를 생성하고 초기화하는 함수 
+ * @return 생성된 server 객체
+ */
 server_t* server_init(){
     server_t* server = (server_t*)malloc( sizeof(server_t));
 
@@ -33,6 +56,12 @@ server_t* server_init(){
     }
 }
 
+/**
+ * @fn void server_destroy(server_t* server)
+ * @brief server 객체를 삭제하기 위한 함수
+ * @return void
+ * @param server 삭제할 server 객체
+ */
 void server_destroy(server_t* server){
     if (close(server->sockfd) == -1){
         perror("close failed!");
@@ -40,7 +69,13 @@ void server_destroy(server_t* server){
     free(server);
 }
 
-int server_process_data(server_t* server){
+/**
+ * @fn int server_process_data(server_t* server)
+ * @brief client에서 받은 데이터를 처리해서 응답하는 함수 
+ * @return void 
+ * @param server 데이터를 처리할 server 객체
+ */
+void server_process_data(server_t* server){
     if (server){
         ssize_t recv_byte;
         struct sockaddr_in client_addr;
