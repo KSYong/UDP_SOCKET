@@ -11,12 +11,18 @@
 
 #define DATA_MAX_LEN 1024
 
+/// @struct kmp_hd_t
+/// @brief 통신을 위한 프로토콜 헤더 구조체 
 typedef struct kmp_hd_s kmp_hd_t;
 struct kmp_hd_s{
+	/// message sequence identifier
  	uint32_t seq_id;
+	/// message data length
 	int data_len;
 };
 
+/// @struct kmp_t
+/// @brief 통신을 위한 프로토콜 구조체 
 typedef struct kmp_s kmp_t;
 struct kmp_s{
  	kmp_hd_t hd;
