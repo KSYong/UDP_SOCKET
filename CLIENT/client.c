@@ -59,7 +59,6 @@ void client_destroy(client_t* client){
  * @param client 메시지 요청을 하기 위한 client 객체
  */
 void client_process_data(client_t* client){
-    char buffer[BUF_MAX_LEN];
     char *hello = "Hello from client to server";
     if((sendto(client->sockfd, (const char*)hello, strlen(hello), 0, (const struct sockaddr*) &(client->server_addr), sizeof(client->server_addr)) <= 0)){
         perror("client to server send failed!");
@@ -69,11 +68,12 @@ void client_process_data(client_t* client){
     }
 
     ssize_t recv_byte;
+	kmp_t recv_msg;
 	socklen_t len = sizeof(client->server_addr);
-    recv_byte = recvfrom(client->sockfd, (char*) buffer, BUF_MAX_LEN, MSG_WAITALL, (struct sockaddr*)&client->server_addr, &len);
+    recv_byte = recvfrom(client->sockfd, &recv_msg, sizeof(recv_msg), MSG_WAITALL, (struct sockaddr*)&client->server_addr, &len);
     if (recv_byte > 0){
-        buffer[recv_byte] = '\0';
-        printf("Server : %s\n", buffer);
+        kmp_print_msg(&recv_msg);
+		printf("Server : %s\n", recv_msg.data);
     }
     else{
         perror("receiving data from server failed!\n");

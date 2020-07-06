@@ -81,17 +81,20 @@ void server_destroy(server_t* server){
 void server_process_data(server_t* server){
     if (server){
         ssize_t recv_byte;
-        char buffer[BUF_MAX_LEN];
+        char read_buf[ DATA_MAX_LEN];
+		kmp_t recv_msg;
         char* hello = "Hello from server";
 		socklen_t len = sizeof(server->client_addr);
-        recv_byte = recvfrom(server->sockfd, (char*) buffer, BUF_MAX_LEN, MSG_WAITALL, (struct sockaddr*)&server->client_addr, &len);
+        recv_byte = recvfrom(server->sockfd, &recv_msg, sizeof( recv_msg), MSG_WAITALL, (struct sockaddr*)&server->client_addr, &len);
         if (recv_byte > 0){
-            buffer[recv_byte] = '\0';
-            printf("Client : %s\n", buffer);
+			kmp_print_msg( &recv_msg);
+			printf("Client to Server message sent!\n");
+			printf("Client : %s\n", recv_msg.data);
         }
         else{
             perror("receiving data from client failed!\n");
         }
+		
         if((sendto(server->sockfd, (const char*)hello, strlen(hello), 0, (const struct sockaddr*) &server->client_addr, sizeof(server->client_addr)) <= 0)){
             perror("server to client send failed!");
         }

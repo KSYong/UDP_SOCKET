@@ -12,6 +12,8 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 
+#include "../PROTOCOL/kmp.h"
+
 #define BUF_MAX_LEN 1024
 #define PORT 8080
 
